@@ -10,10 +10,6 @@ import Title from "./Title";
 import { useQuery } from "react-query";
 import { Box, Button } from "@material-ui/core";
 
-function preventDefault(event) {
-  event.preventDefault();
-}
-
 const useStyles = makeStyles((theme) => ({
   seeMore: {
     marginTop: theme.spacing(3),
@@ -23,9 +19,12 @@ const useStyles = makeStyles((theme) => ({
 export default function Orders() {
   const classes = useStyles();
 
-  const { isLoading, isFetching, data, refetch } = useQuery("ordersData", () =>
-    fetch("http://localhost:3003/orders").then((res) => res.json())
+  const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
+    "ordersData",
+    () => fetch("http://localhost:3003/orders").then((res) => res.json())
   );
+
+  if (isError) return <p>{JSON.stringify(error.message)}</p>;
 
   const rows = data?.orders.map((order) => ({
     ...order,
